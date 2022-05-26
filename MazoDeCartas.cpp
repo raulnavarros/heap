@@ -23,9 +23,9 @@ Mazo* CrearMazoEspanol();
 Mazo* CrearMazoTruco();
 
 int main() {
-	Mazo* mazoEspanol = CrearMazoEspanol();
+    Mazo* mazoEspanol = CrearMazoEspanol();
     Mazo* mazoTruco = CrearMazoTruco();
-	MostrarMazo(mazoEspanol);
+    MostrarMazo(mazoEspanol);
     MostrarMazo(mazoTruco);
     DestruirMazoCartas(mazoEspanol);
     DestruirMazoCartas(mazoTruco);
