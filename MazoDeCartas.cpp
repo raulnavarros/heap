@@ -13,17 +13,19 @@ struct Mazo{
 	Carta** cartas;
 };
 
+Carta* CrearCarta(int valor, TipoPalo palo);
+Carta* CrearCartaTruco(int numero, TipoPalo palo)
 void DestruirMazoCartas(Mazo* mazo);
 void MostrarMazo(Mazo* mazo);
-void InicializarMazoEspanolPorPalo(Mazo* mazoEspanol, int indiceCarta, TipoPalo palo);
-void InicializarMazoTrucoPorPalo(Mazo* mazo, int indiceCarta, TipoPalo palo);
+void CrearCartasEspanolasPorPalo(Carta** cartas, TipoPalo palo);
+void CrearCartasTrucoPorPalo(Carta** cartas, TipoPalo palo);
 Mazo* CrearMazoEspanol();
 Mazo* CrearMazoTruco();
 
 int main() {
-    Mazo* mazoEspanol = CrearMazoEspanol();
+	Mazo* mazoEspanol = CrearMazoEspanol();
     Mazo* mazoTruco = CrearMazoTruco();
-    MostrarMazo(mazoEspanol);
+	MostrarMazo(mazoEspanol);
     MostrarMazo(mazoTruco);
     DestruirMazoCartas(mazoEspanol);
     DestruirMazoCartas(mazoTruco);
@@ -43,7 +45,7 @@ void DestruirMazoCartas(Mazo* mazo){
 void MostrarCarta(Carta* cartas){
 	switch(cartas->palo){
 		case Espada:
-			cout<<"Espada";
+			cout<<"Esp.";
 			break;
 		case Oro:
 			cout<<"Oro";
@@ -60,6 +62,7 @@ void MostrarCarta(Carta* cartas){
 }
 
 void MostrarMazo(Mazo* mazo){
+	cout<<endl;
 	for(int i=0; i<mazo->cantidadCartas; ++i){
 		cout<<"["<<mazo->cartas[i]->valor<<"]";
 	    MostrarCarta(mazo->cartas[i]);
@@ -68,48 +71,54 @@ void MostrarMazo(Mazo* mazo){
 	    else
 	       cout<<" -> ";
 	}
-	cout<<"==============================================================================================================="<<endl;
+	cout<<endl<<"==========================================================="<<endl<<endl;
 }
 
-void InicializarMazoEspanolPorPalo(Mazo* mazoEspanol, int indiceCarta, TipoPalo palo){
+void CrearCartasEspanolasPorPalo(Carta** cartas, TipoPalo palo){
 	for(int i = 0 ; i < 12; ++i){
-		mazoEspanol->cartas[i+indiceCarta] = new Carta;
-		mazoEspanol->cartas[i+indiceCarta]->palo= palo;
-		mazoEspanol->cartas[i+indiceCarta]->valor = i + 1;
+		cartas[i] = CrearCarta(i+1, palo);
+		//cartas[i]->palo= palo;
+		//cartas[i]->valor = i + 1;
 	}
 }
 
-void InicializarMazoTrucoPorPalo(Mazo* mazoTruco, int indiceCarta, TipoPalo palo){
-	for(int i=0; i<10;++i){
-		mazoTruco->cartas[i+indiceCarta] = new Carta;
-		if(i>=7){
-			mazoTruco->cartas[i+indiceCarta]->palo = palo;
-			mazoTruco->cartas[i+indiceCarta]->valor = i + 3;
-		}else{
-			mazoTruco->cartas[i+indiceCarta]->palo = palo;
-			mazoTruco->cartas[i+indiceCarta]->valor = i + 1;
-		}
+
+Carta* CrearCarta(int valor, TipoPalo palo) {
+	Carta* nuevaCarta = NULL;
+	nuevaCarta = new Carta;
+	nuevaCarta->valor = valor;
+	nuevaCarta->palo = palo;
+	return nuevaCarta;
+}
+
+Carta* CrearCartaTruco(int numero, TipoPalo palo){
+	return CrearCarta(numero + (numero > 7 ? 2 : 0), palo);
+}
+
+void CrearCartasTrucoPorPalo(Carta** cartas, TipoPalo palo){
+	for(int i=0; i<10; ++i){
+		cartas[i] = CrearCartaTruco(i+1, palo);
 	}
 }
 
 Mazo* CrearMazoEspanol(){
-	Mazo* mazo = new Mazo;
-	mazo->cantidadCartas = 48;
-	mazo->cartas = new Carta*[48];
-	InicializarMazoEspanolPorPalo(mazo, 0, Espada);
-	InicializarMazoEspanolPorPalo(mazo, 12, Oro);
-	InicializarMazoEspanolPorPalo(mazo, 24, Basto);
-	InicializarMazoEspanolPorPalo(mazo, 36, Copa);
-	return mazo;
+	Mazo* mazoEspanol = new Mazo;
+	mazoEspanol->cantidadCartas = 48;
+	mazoEspanol->cartas = new Carta*[mazoEspanol->cantidadCartas];
+	CrearCartasEspanolasPorPalo(mazoEspanol->cartas, Espada);
+	CrearCartasEspanolasPorPalo(&mazoEspanol->cartas[12], Oro);
+	CrearCartasEspanolasPorPalo(&mazoEspanol->cartas[24], Basto);
+	CrearCartasEspanolasPorPalo(&mazoEspanol->cartas[36], Copa);
+	return mazoEspanol;
 }
 
 Mazo* CrearMazoTruco(){
 	Mazo* mazoTruco = new Mazo;
 	mazoTruco->cantidadCartas = 40;
 	mazoTruco->cartas = new Carta*[mazoTruco->cantidadCartas];
-	InicializarMazoTrucoPorPalo(mazoTruco, 0, Espada);
-	InicializarMazoTrucoPorPalo(mazoTruco, 10, Oro);
-	InicializarMazoTrucoPorPalo(mazoTruco, 20, Basto);
-	InicializarMazoTrucoPorPalo(mazoTruco, 30, Copa);
+	CrearCartasTrucoPorPalo(mazoTruco->cartas, Espada);
+	CrearCartasTrucoPorPalo(&mazoTruco->cartas[10], Oro);
+	CrearCartasTrucoPorPalo(&mazoTruco->cartas[20], Basto);
+	CrearCartasTrucoPorPalo(&mazoTruco->cartas[30], Copa);
 	return mazoTruco;
 }
